@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mail.md Test Fixture – Gmail-like Structure</title>
+  <style>
+    /* Minimal Gmail-like base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-size: 14px;
+      color: #202124;
+      background: #f6f8fc;
+    }
+
+    /* Gmail layout structure */
+    .gmail-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Left navigation */
+    [role="navigation"] {
+      width: 256px;
+      background: white;
+      border-right: 1px solid #dadce0;
+      padding: 8px;
+      flex-shrink: 0;
+    }
+
+    [role="navigation"] button {
+      width: 100%;
+      text-align: left;
+      padding: 8px 16px;
+      border: none;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    [role="navigation"] button:hover {
+      background: #f1f3f4;
+    }
+
+    /* Main content */
+    [role="main"] {
+      flex: 1;
+      background: white;
+      overflow-y: auto;
+    }
+
+    /* Right sidebar */
+    [role="complementary"] {
+      width: 56px;
+      background: white;
+      border-left: 1px solid #dadce0;
+      flex-shrink: 0;
+    }
+
+    /* Inbox list */
+    [role="list"] {
+      list-style: none;
+    }
+
+    [role="row"] {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-bottom: 1px solid #f1f3f4;
+      cursor: pointer;
+    }
+
+    [role="row"]:hover {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    [role="checkbox"] {
+      margin-right: 12px;
+    }
+
+    /* Thread view */
+    [role="listitem"] {
+      padding: 24px;
+    }
+
+    [role="article"] {
+      margin: 16px 0;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    /* Compose dialog */
+    [role="dialog"][data-gmd="compose"] {
+      position: fixed;
+      bottom: 0;
+      right: 48px;
+      width: 512px;
+      background: white;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      border-radius: 8px 8px 0 0;
+      display: none;
+    }
+
+    [role="dialog"][data-gmd="compose"].visible {
+      display: block;
+    }
+
+    [role="dialog"] input[type="text"],
+    [role="dialog"] [contenteditable] {
+      width: 100%;
+      padding: 8px 16px;
+      border: none;
+      border-bottom: 1px solid #dadce0;
+    }
+
+    [role="dialog"] [contenteditable] {
+      min-height: 200px;
+      outline: none;
+    }
+
+    /* Category tabs */
+    [role="tablist"] {
+      display: flex;
+      border-bottom: 1px solid #dadce0;
+      padding: 0 16px;
+    }
+
+    [role="tab"] {
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    [role="tab"][aria-selected="true"] {
+      border-bottom-color: #1a73e8;
+      color: #1a73e8;
+    }
+
+    /* Toolbar */
+    [role="toolbar"] {
+      padding: 8px 16px;
+      border-bottom: 1px solid #dadce0;
+      display: flex;
+      gap: 8px;
+    }
+
+    [role="toolbar"] button {
+      padding: 8px 12px;
+      border: none;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    [role="toolbar"] button:hover {
+      background: #f1f3f4;
+    }
+
+    /* Banner */
+    .banner {
+      background: #e3f2fd;
+      padding: 12px 16px;
+      border-bottom: 1px solid #90caf9;
+      text-align: center;
+    }
+
+    blockquote {
+      border-left: 3px solid #dadce0;
+      padding-left: 12px;
+      margin: 12px 0;
+      color: #5f6368;
+    }
+  </style>
+</head>
+<body>
+  <div class="gmail-container">
+    <!-- Left Navigation -->
+    <nav role="navigation" aria-label="Main navigation">
+      <button>Compose</button>
+      <button>Inbox <span>(3)</span></button>
+      <button>Starred</button>
+      <button>Snoozed</button>
+      <button>Sent</button>
+      <button>Drafts <span>(1)</span></button>
+      <button>More</button>
+      <hr>
+      <button>Work</button>
+      <button>Personal</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main role="main">
+      <!-- Promo Banner -->
+      <div class="banner">
+        ✨ Try Gmail's new features! <a href="#">Learn more</a>
+      </div>
+
+      <!-- Category Tabs -->
+      <div role="tablist" aria-label="Category tabs">
+        <button role="tab" aria-selected="true">Primary</button>
+        <button role="tab">Social</button>
+        <button role="tab">Promotions</button>
+      </div>
+
+      <!-- Toolbar -->
+      <div role="toolbar" aria-label="Mail toolbar">
+        <button aria-label="Select">☐</button>
+        <button aria-label="Archive">📦</button>
+        <button aria-label="Report spam">⚠️</button>
+        <button aria-label="Delete">🗑️</button>
+        <button aria-label="Mark as unread">✉️</button>
+        <button aria-label="Snooze">⏰</button>
+        <button aria-label="Add to tasks">✓</button>
+        <button aria-label="Move to">📁</button>
+        <button aria-label="Labels">🏷️</button>
+        <button aria-label="More">⋮</button>
+      </div>
+
+      <!-- Inbox View (default) -->
+      <div id="inbox-view">
+        <div role="list" data-gmd="inbox-list">
+          <div role="row" tabindex="0">
+            <input type="checkbox" role="checkbox">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%234285f4'/%3E%3C/svg%3E" role="img" alt="Avatar">
+            <div style="flex: 1;">
+              <strong>Jane Doe</strong>
+              <span style="margin: 0 8px;">·</span>
+              <span>Q4 Planning – Draft ready for review</span>
+              <span style="margin-left: auto; color: #5f6368;">2:34 PM</span>
+            </div>
+            <span role="link" data-tooltip="Work">🏷️ Work</span>
+          </div>
+
+          <div role="row" tabindex="0">
+            <input type="checkbox" role="checkbox">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23ea4335'/%3E%3C/svg%3E" role="img" alt="Avatar">
+            <div style="flex: 1;">
+              <strong>GitHub</strong>
+              <span style="margin: 0 8px;">·</span>
+              <span>[mail-md] New pull request opened</span>
+              <span style="margin-left: auto; color: #5f6368;">11:22 AM</span>
+            </div>
+          </div>
+
+          <div role="row" tabindex="0">
+            <input type="checkbox" role="checkbox">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2334a853'/%3E%3C/svg%3E" role="img" alt="Avatar">
+            <div style="flex: 1;">
+              <strong>Team Newsletter</strong>
+              <span style="margin: 0 8px;">·</span>
+              <span>Weekly update – September 30, 2026</span>
+              <span style="margin-left: auto; color: #5f6368;">Yesterday</span>
+            </div>
+            <span role="link" data-tooltip="Personal">🏷️ Personal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thread View (hidden by default) -->
+      <div id="thread-view" style="display: none;">
+        <div role="listitem">
+          <h2>Q4 Planning – Draft ready for review</h2>
+          <div style="color: #5f6368; margin: 8px 0;">
+            Jane Doe &lt;jane@example.com&gt; · 2:34 PM (1 hour ago)
+          </div>
+
+          <article role="article">
+            <p>Hi team,</p>
+            <p>I've finished the Q4 planning document. Here are the key highlights:</p>
+            <ul>
+              <li>Launch timeline: October 15</li>
+              <li>Resource allocation: 3 engineers, 1 designer</li>
+              <li>Success metrics: 10k MAU by December</li>
+            </ul>
+            <p>Please review and share your feedback by EOW.</p>
+            <p>Thanks!<br>Jane</p>
+          </article>
+
+          <div role="toolbar" style="margin-top: 16px;">
+            <button>Reply</button>
+            <button>Forward</button>
+            <button>Archive</button>
+          </div>
+
+          <article role="article" style="margin-top: 24px;">
+            <div style="color: #5f6368; margin-bottom: 8px;">
+              You · 3:15 PM (15 minutes ago)
+            </div>
+            <p>Looks great! A few thoughts:</p>
+            <blockquote>
+              <p>Launch timeline: October 15</p>
+            </blockquote>
+            <p>This seems tight given the current workload. Can we push to Oct 22?</p>
+            <p>Otherwise LGTM.</p>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar (Calendar, Tasks, etc.) -->
+    <aside role="complementary" aria-label="Side panel">
+      <button style="padding: 16px 0; width: 100%; border: none; background: transparent; cursor: pointer;">📅</button>
+      <button style="padding: 16px 0; width: 100%; border: none; background: transparent; cursor: pointer;">✓</button>
+      <button style="padding: 16px 0; width: 100%; border: none; background: transparent; cursor: pointer;">📝</button>
+    </aside>
+  </div>
+
+  <!-- Compose Dialog -->
+  <div role="dialog" aria-label="New Message" data-gmd="compose" id="compose-dialog">
+    <div style="padding: 12px 16px; background: #f1f3f4; border-bottom: 1px solid #dadce0; display: flex; justify-content: space-between;">
+      <span>New Message</span>
+      <button onclick="document.getElementById('compose-dialog').classList.remove('visible')">✕</button>
+    </div>
+    <div style="padding: 16px;">
+      <input type="text" placeholder="Recipients" role="combobox" style="margin-bottom: 8px;">
+      <input type="text" name="subjectbox" placeholder="Subject" style="margin-bottom: 8px;">
+      <div contenteditable="true" aria-label="Message Body" style="min-height: 300px; padding: 12px; border: 1px solid #dadce0; border-radius: 4px;">
+        
+      </div>
+      <div role="toolbar" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #dadce0;">
+        <button role="button" aria-label="Send" style="background: #1a73e8; color: white; padding: 8px 24px; border-radius: 4px;">Send</button>
+        <button>A</button>
+        <button>🔗</button>
+        <button>😊</button>
+        <button>📎</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple navigation simulation
+    document.querySelector('[role="navigation"] button:first-child').addEventListener('click', () => {
+      document.getElementById('compose-dialog').classList.add('visible');
+    });
+
+    // View switching
+    document.querySelector('[role="row"]').addEventListener('click', function() {
+      document.getElementById('inbox-view').style.display = 'none';
+      document.getElementById('thread-view').style.display = 'block';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "mail-md",
+  "version": "0.1.0",
+  "description": "A focused, Markdown-editor-style visual reskin for Gmail",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed"
+  },
+  "keywords": [
+    "gmail",
+    "markdown",
+    "chrome-extension",
+    "productivity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}
