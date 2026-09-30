@@ -13,9 +13,26 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-// Read extension files
+// Read extension files - the REAL ones that ship
 const css = fs.readFileSync(path.join(__dirname, '../gmailmd.css'), 'utf8');
-const js = fs.readFileSync(path.join(__dirname, 'content-test.js'), 'utf8');
+const js = fs.readFileSync(path.join(__dirname, '../content.js'), 'utf8');
+
+// Mock chrome API for tests
+const chromeMock = `
+  if (typeof chrome === 'undefined') {
+    window.chrome = {
+      storage: {
+        sync: {
+          get: (defaults, callback) => callback(defaults),
+          set: () => {}
+        },
+        onChanged: {
+          addListener: () => {}
+        }
+      }
+    };
+  }
+`;
 
 // Helper to compute screenshot hash
 function getFileHash(filePath) {
@@ -33,6 +50,9 @@ test.describe('Mail.md Visual Tests', () => {
     await page.goto(`file://${path.join(__dirname, 'fixture/index.html')}`, {
       waitUntil: 'domcontentloaded'
     });
+    
+    // Inject chrome API mock first
+    await page.evaluate(chromeMock);
     
     // Ensure clean initial state
     await page.evaluate(() => {
