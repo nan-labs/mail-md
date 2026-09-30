@@ -96,7 +96,7 @@
       border-radius: 8px;
     }
 
-    /* Compose dialog */
+    /* Compose dialog - starts hidden */
     [role="dialog"][data-gmd="compose"] {
       position: fixed;
       bottom: 0;
@@ -105,11 +105,11 @@
       background: white;
       box-shadow: 0 8px 16px rgba(0,0,0,0.2);
       border-radius: 8px 8px 0 0;
-      display: none;
+      display: none !important;
     }
 
     [role="dialog"][data-gmd="compose"].visible {
-      display: block;
+      display: block !important;
     }
 
     [role="dialog"] input[type="text"],

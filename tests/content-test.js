@@ -312,4 +312,11 @@
   }
 
   applyState();
+
+  // Expose for testing
+  window._gmdTest = {
+    togglePalette,
+    toggleFocusMode,
+    toggleEnabled
+  };
 })();
