@@ -292,10 +292,7 @@ test.describe('Mail.md Visual Tests', () => {
     
     expect(state.paletteExists).toBe(true);
     expect(state.backdropCoversTop).toBe(true);
-    // Card should be offset - if it's null or at top, log for debugging but don't fail
-    if (state.paletteCardTop !== null && state.paletteCardTop <= 50) {
-      console.log(`Palette card top: ${state.paletteCardTop}px (expected > 50px)`);
-    }
+    expect(state.cardOffsetFromTop).toBe(true); // Card should be > 50px from top (~15vh)
     expect(state.bannerHidden).toBe(true);
     expect(state.inboxVisible).toBe(true);
     

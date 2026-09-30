@@ -120,7 +120,6 @@
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        padding-top: 15vh;
         background: rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(3px);
       }
@@ -134,7 +133,7 @@
         box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
         overflow: hidden;
         font-family: 'iA Writer Duo', 'SF Mono', Monaco, Menlo, Consolas, monospace;
-        margin-top: 0;
+        margin-top: 15vh;
       }
 
       [data-gmd-theme="dark"] .palette {
