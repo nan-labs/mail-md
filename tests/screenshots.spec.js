@@ -254,20 +254,30 @@ test.describe('Mail.md Visual Tests', () => {
     });
     await page.waitForTimeout(500);
     
-    // Visual assertions: verify palette state
+    // Visual assertions: verify palette state and positioning
     const state = await page.evaluate(() => {
       const paletteHost = document.getElementById('gmd-palette-host');
       const banner = document.querySelector('.banner');
       const inboxVisible = document.getElementById('inbox-view').style.display !== 'none';
       
+      // Check palette offset from top
+      let paletteTop = null;
+      if (paletteHost && paletteHost.shadowRoot) {
+        const hostRect = paletteHost.getBoundingClientRect();
+        paletteTop = hostRect.top;
+      }
+      
       return {
         paletteExists: paletteHost !== null,
+        paletteTop: paletteTop,
+        paletteOffsetFromTop: paletteTop !== null && paletteTop > 50, // Should be ~15vh from top
         bannerHidden: banner && window.getComputedStyle(banner).display === 'none',
         inboxVisible: inboxVisible
       };
     });
     
     expect(state.paletteExists).toBe(true);
+    expect(state.paletteOffsetFromTop).toBe(true);
     expect(state.bannerHidden).toBe(true);
     expect(state.inboxVisible).toBe(true);
     
@@ -330,43 +340,149 @@ test.describe('Mail.md Visual Tests', () => {
     screenshotHashes['06-focus'] = hash;
   });
 
-  test('07 - Dark Theme', async ({ page }) => {
+  test('07 - Dark Theme Inbox', async ({ page }) => {
     // Inject extension
     await page.addStyleTag({ content: css });
     await page.evaluate(js);
     
-    // Enable Mail.md with dark theme - show inbox, not compose
+    // Enable Mail.md with dark theme - show inbox
     await page.evaluate(() => {
       document.documentElement.classList.add('gmd-on');
       document.documentElement.setAttribute('data-gmd-theme', 'dark');
-      // Ensure compose is hidden and we're on inbox view
-      const compose = document.getElementById('compose-dialog');
-      if (compose) {
-        compose.classList.remove('visible');
-        compose.style.display = 'none';
-      }
-      document.getElementById('inbox-view').style.display = 'block';
-      document.getElementById('thread-view').style.display = 'none';
     });
     
     await page.waitForTimeout(500);
     
-    const screenshotPath = 'docs/screenshots/07-dark.png';
+    // Visual assertions: verify dark theme applied
+    const state = await page.evaluate(() => {
+      const body = document.body;
+      const main = document.querySelector('[role="main"]');
+      const bodyBg = window.getComputedStyle(body).backgroundColor;
+      const mainBg = window.getComputedStyle(main).backgroundColor;
+      
+      return {
+        bodyBg,
+        mainBg,
+        isDark: bodyBg.includes('30, 30, 30') || bodyBg.includes('rgb(30') // #1e1e1e = rgb(30,30,30)
+      };
+    });
+    
+    expect(state.isDark).toBe(true);
+    
+    const screenshotPath = 'docs/screenshots/07-dark-inbox.png';
     await page.screenshot({ 
       path: screenshotPath,
       fullPage: true 
     });
     
-    // Verify this is different from light theme inbox
     const hash = getFileHash(screenshotPath);
     const lightHash = screenshotHashes['02-inbox-light'];
     if (lightHash) {
       expect(hash).not.toBe(lightHash);
     }
-    screenshotHashes['07-dark'] = hash;
+    screenshotHashes['07-dark-inbox'] = hash;
   });
 
-  test('08 - Kill Switch (back to stock)', async ({ page }) => {
+  test('09 - Dark Theme Reading', async ({ page }) => {
+    // Inject extension
+    await page.addStyleTag({ content: css });
+    await page.evaluate(js);
+    
+    // Enable Mail.md with dark theme
+    await page.evaluate(() => {
+      document.documentElement.classList.add('gmd-on');
+      document.documentElement.setAttribute('data-gmd-theme', 'dark');
+    });
+    
+    // Switch to thread view
+    await page.evaluate(() => {
+      document.getElementById('inbox-view').style.display = 'none';
+      document.getElementById('thread-view').style.display = 'block';
+    });
+    await page.waitForTimeout(500);
+    
+    // Visual assertions: verify dark theme in reading view
+    const state = await page.evaluate(() => {
+      const body = document.body;
+      const main = document.querySelector('[role="main"]');
+      const bodyBg = window.getComputedStyle(body).backgroundColor;
+      const mainBg = window.getComputedStyle(main).backgroundColor;
+      
+      return {
+        bodyBg,
+        mainBg,
+        isDark: bodyBg.includes('30, 30, 30') || bodyBg.includes('rgb(30')
+      };
+    });
+    
+    expect(state.isDark).toBe(true);
+    
+    const screenshotPath = 'docs/screenshots/09-dark-reading.png';
+    await page.screenshot({ 
+      path: screenshotPath,
+      fullPage: true 
+    });
+    
+    screenshotHashes['09-dark-reading'] = getFileHash(screenshotPath);
+  });
+
+  test('10 - Dark Theme Compose', async ({ page }) => {
+    // Inject extension
+    await page.addStyleTag({ content: css });
+    await page.evaluate(js);
+    
+    // Enable Mail.md with dark theme
+    await page.evaluate(() => {
+      document.documentElement.classList.add('gmd-on');
+      document.documentElement.setAttribute('data-gmd-theme', 'dark');
+    });
+    
+    // Open compose
+    await page.evaluate(() => {
+      const compose = document.getElementById('compose-dialog');
+      compose.classList.add('visible');
+      compose.style.display = 'block';
+    });
+    await page.waitForTimeout(300);
+    
+    // Add sample text
+    await page.evaluate(() => {
+      const recipients = document.querySelector('#compose-dialog [role="combobox"]');
+      if (recipients) recipients.value = 'team@example.com';
+      
+      const subject = document.querySelector('#compose-dialog input[name="subjectbox"]');
+      if (subject) subject.value = 'Late evening update';
+      
+      const editor = document.querySelector('#compose-dialog [contenteditable="true"]');
+      if (editor) {
+        editor.textContent = 'Writing an email in dark mode.\n\nThe entire compose view is dark.';
+      }
+    });
+    await page.waitForTimeout(200);
+    
+    // Visual assertions: verify dark theme in compose
+    const state = await page.evaluate(() => {
+      const compose = document.getElementById('compose-dialog');
+      const composeBg = window.getComputedStyle(compose).backgroundColor;
+      
+      return {
+        composeBg,
+        isDark: composeBg.includes('30, 30, 30') || composeBg.includes('rgb(30')
+      };
+    });
+    
+    expect(state.isDark).toBe(true);
+    
+    const screenshotPath = 'docs/screenshots/10-dark-compose.png';
+    await page.screenshot({ 
+      path: screenshotPath,
+      fullPage: true 
+    });
+    
+    screenshotHashes['10-dark-compose'] = getFileHash(screenshotPath);
+  });
+
+  test('11 - Kill Switch (back to stock)', async ({ page }) => {
     // Inject extension
     await page.addStyleTag({ content: css });
     await page.evaluate(js);
@@ -392,7 +508,7 @@ test.describe('Mail.md Visual Tests', () => {
     });
     await page.waitForTimeout(300);
     
-    const screenshotPath = 'docs/screenshots/08-killswitch.png';
+    const screenshotPath = 'docs/screenshots/11-killswitch.png';
     await page.screenshot({ 
       path: screenshotPath,
       fullPage: true 
@@ -400,6 +516,6 @@ test.describe('Mail.md Visual Tests', () => {
     
     // Verify this matches stock Gmail (should be same or very similar)
     const hash = getFileHash(screenshotPath);
-    screenshotHashes['08-killswitch'] = hash;
+    screenshotHashes['11-killswitch'] = hash;
   });
 });

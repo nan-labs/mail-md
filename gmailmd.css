@@ -145,6 +145,17 @@ html.gmd-on [role="main"] {
   max-width: 900px !important;
   margin: 0 auto !important;
   padding: 2rem !important;
+  background: var(--gmd-bg) !important;
+  color: var(--gmd-fg) !important;
+}
+
+/* Ensure dark theme applies to all containers */
+html.gmd-on .gmail-container,
+html.gmd-on main,
+html.gmd-on #inbox-view,
+html.gmd-on #thread-view {
+  background: var(--gmd-bg) !important;
+  color: var(--gmd-fg) !important;
 }
 
 /* ============================================================================
@@ -243,6 +254,7 @@ html.gmd-on [data-gmd="compose"]:not([style*="display: none"]):not([hidden]) {
   max-width: none !important;
   max-height: none !important;
   background: var(--gmd-bg) !important;
+  color: var(--gmd-fg) !important;
   z-index: 9999 !important;
   padding: 4rem !important;
   display: flex !important;
@@ -318,13 +330,12 @@ html.gmd-on [data-gmd="compose"] [role="button"][aria-label*="Send"] {
 html.gmd-on [data-gmd="compose"].visible > div:first-child,
 html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child {
   position: absolute !important;
-  top: 2rem !important;
-  right: calc((100vw - 70ch) / 2) !important;
+  top: 3rem !important;
+  right: calc((100vw - 70ch) / 2 - 2rem) !important;
   padding: 0 !important;
   background: transparent !important;
   border: none !important;
-  display: flex !important;
-  justify-content: flex-end !important;
+  display: block !important;
   width: auto !important;
   z-index: 10 !important;
 }
@@ -334,17 +345,23 @@ html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child butt
   background: transparent !important;
   border: none !important;
   color: var(--gmd-fg-dim) !important;
-  font-size: 20px !important;
+  font-size: 18px !important;
   padding: 0.25rem 0.5rem !important;
   cursor: pointer !important;
-  opacity: 0.3 !important;
+  opacity: 0.25 !important;
   transition: opacity 0.2s !important;
   font-family: 'iA Writer Duo', monospace !important;
+  line-height: 1 !important;
+}
+
+html.gmd-on [data-gmd="compose"].visible:hover > div:first-child button,
+html.gmd-on [data-gmd="compose"][style*="display: block"]:hover > div:first-child button {
+  opacity: 0.4 !important;
 }
 
 html.gmd-on [data-gmd="compose"].visible > div:first-child button:hover,
 html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child button:hover {
-  opacity: 0.8 !important;
+  opacity: 1 !important;
 }
 
 html.gmd-on [data-gmd="compose"].visible > div:first-child span:first-child,
