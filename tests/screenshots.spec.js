@@ -29,11 +29,25 @@ const screenshotHashes = {};
 
 test.describe('Mail.md Visual Tests', () => {
   test.beforeEach(async ({ page }) => {
-    // Load fixture
-    await page.goto(`file://${path.join(__dirname, 'fixture/index.html')}`);
+    // Load fixture fresh for each test
+    await page.goto(`file://${path.join(__dirname, 'fixture/index.html')}`, {
+      waitUntil: 'domcontentloaded'
+    });
     
-    // Wait for page to be ready
-    await page.waitForLoadState('domcontentloaded');
+    // Ensure clean initial state
+    await page.evaluate(() => {
+      // Force compose hidden
+      const compose = document.getElementById('compose-dialog');
+      if (compose) {
+        compose.classList.remove('visible');
+        compose.style.display = 'none';
+      }
+      // Default to inbox view
+      const inboxView = document.getElementById('inbox-view');
+      const threadView = document.getElementById('thread-view');
+      if (inboxView) inboxView.style.display = 'block';
+      if (threadView) threadView.style.display = 'none';
+    });
   });
 
   test('01 - Stock Gmail (baseline)', async ({ page }) => {
@@ -68,12 +82,29 @@ test.describe('Mail.md Visual Tests', () => {
     await page.evaluate(() => {
       document.documentElement.classList.add('gmd-on');
       document.documentElement.setAttribute('data-gmd-theme', 'light');
-      // Ensure compose is hidden
-      const compose = document.getElementById('compose-dialog');
-      if (compose) compose.classList.remove('visible');
     });
     
     await page.waitForTimeout(500);
+    
+    // Visual assertions: verify correct state
+    const state = await page.evaluate(() => {
+      const compose = document.getElementById('compose-dialog');
+      const inboxView = document.getElementById('inbox-view');
+      const inboxRows = document.querySelectorAll('[role="row"]');
+      const nav = document.querySelector('[role="navigation"]');
+      
+      return {
+        composeVisible: compose && (compose.classList.contains('visible') || compose.style.display === 'block'),
+        inboxVisible: inboxView && inboxView.style.display !== 'none',
+        hasInboxRows: inboxRows.length > 0,
+        navHidden: nav && window.getComputedStyle(nav).display === 'none'
+      };
+    });
+    
+    expect(state.composeVisible).toBe(false);
+    expect(state.inboxVisible).toBe(true);
+    expect(state.hasInboxRows).toBe(true);
+    expect(state.navHidden).toBe(true);
     
     const screenshotPath = 'docs/screenshots/02-inbox-light.png';
     await page.screenshot({ 
@@ -81,7 +112,6 @@ test.describe('Mail.md Visual Tests', () => {
       fullPage: true 
     });
     
-    // Verify this screenshot is different from stock
     const hash = getFileHash(screenshotPath);
     const stockHash = screenshotHashes['01-stock'];
     if (stockHash) {
@@ -99,12 +129,6 @@ test.describe('Mail.md Visual Tests', () => {
     await page.evaluate(() => {
       document.documentElement.classList.add('gmd-on');
       document.documentElement.setAttribute('data-gmd-theme', 'light');
-      // Ensure compose is hidden
-      const compose = document.getElementById('compose-dialog');
-      if (compose) {
-        compose.classList.remove('visible');
-        compose.style.display = 'none';
-      }
     });
     
     // Switch to thread view
@@ -114,23 +138,34 @@ test.describe('Mail.md Visual Tests', () => {
     });
     await page.waitForTimeout(500);
     
+    // Visual assertions: verify reading state
+    const state = await page.evaluate(() => {
+      const banner = document.querySelector('.banner');
+      const threadView = document.getElementById('thread-view');
+      const articles = document.querySelectorAll('[role="article"]');
+      const toolbar = document.querySelector('[role="toolbar"]');
+      
+      return {
+        bannerHidden: banner && window.getComputedStyle(banner).display === 'none',
+        threadVisible: threadView && threadView.style.display !== 'none',
+        hasArticles: articles.length > 0,
+        toolbarMinimized: toolbar !== null
+      };
+    });
+    
+    expect(state.bannerHidden).toBe(true);
+    expect(state.threadVisible).toBe(true);
+    expect(state.hasArticles).toBe(true);
+    
     const screenshotPath = 'docs/screenshots/03-reading.png';
     await page.screenshot({ 
       path: screenshotPath,
       fullPage: true 
     });
     
-    // Verify this is different from inbox (allow small variance due to content differences)
     const hash = getFileHash(screenshotPath);
     const inboxHash = screenshotHashes['02-inbox-light'];
-    // Reading view should show different content (thread vs inbox list)
-    // If they're the same, the thread view isn't rendering correctly
     screenshotHashes['03-reading'] = hash;
-    
-    // Log for debugging but don't fail - visual inspection is primary verification
-    if (inboxHash && hash === inboxHash) {
-      console.log('Warning: Reading view appears identical to inbox. Check thread-view visibility.');
-    }
   });
 
   test('04 - Compose view', async ({ page }) => {
@@ -154,10 +189,10 @@ test.describe('Mail.md Visual Tests', () => {
     
     // Add sample text
     await page.evaluate(() => {
-      const recipients = document.querySelector('[role="combobox"]');
+      const recipients = document.querySelector('#compose-dialog [role="combobox"]');
       if (recipients) recipients.value = 'team@example.com';
       
-      const subject = document.querySelector('input[name="subjectbox"]');
+      const subject = document.querySelector('#compose-dialog input[name="subjectbox"]');
       if (subject) subject.value = 'Q4 Planning Update';
       
       const editor = document.querySelector('#compose-dialog [contenteditable="true"]');
@@ -167,13 +202,30 @@ test.describe('Mail.md Visual Tests', () => {
     });
     await page.waitForTimeout(200);
     
+    // Visual assertions: verify compose state
+    const state = await page.evaluate(() => {
+      const compose = document.getElementById('compose-dialog');
+      const editor = document.querySelector('#compose-dialog [contenteditable="true"]');
+      const closeBtn = document.querySelector('#compose-dialog button');
+      
+      return {
+        composeVisible: compose && (compose.classList.contains('visible') || compose.style.display === 'block'),
+        hasEditor: editor !== null,
+        hasCloseButton: closeBtn !== null,
+        editorHasContent: editor && editor.textContent.length > 0
+      };
+    });
+    
+    expect(state.composeVisible).toBe(true);
+    expect(state.hasEditor).toBe(true);
+    expect(state.editorHasContent).toBe(true);
+    
     const screenshotPath = 'docs/screenshots/04-compose.png';
     await page.screenshot({ 
       path: screenshotPath,
       fullPage: true 
     });
     
-    // Verify this is different from reading view
     const hash = getFileHash(screenshotPath);
     const readingHash = screenshotHashes['03-reading'];
     if (readingHash) {
@@ -191,12 +243,6 @@ test.describe('Mail.md Visual Tests', () => {
     await page.evaluate(() => {
       document.documentElement.classList.add('gmd-on');
       document.documentElement.setAttribute('data-gmd-theme', 'light');
-      // Ensure compose is hidden
-      const compose = document.getElementById('compose-dialog');
-      if (compose) {
-        compose.classList.remove('visible');
-        compose.style.display = 'none';
-      }
     });
     await page.waitForTimeout(200);
     
@@ -208,11 +254,22 @@ test.describe('Mail.md Visual Tests', () => {
     });
     await page.waitForTimeout(500);
     
-    // Verify palette is visible
-    const paletteVisible = await page.evaluate(() => {
-      return document.getElementById('gmd-palette-host') !== null;
+    // Visual assertions: verify palette state
+    const state = await page.evaluate(() => {
+      const paletteHost = document.getElementById('gmd-palette-host');
+      const banner = document.querySelector('.banner');
+      const inboxVisible = document.getElementById('inbox-view').style.display !== 'none';
+      
+      return {
+        paletteExists: paletteHost !== null,
+        bannerHidden: banner && window.getComputedStyle(banner).display === 'none',
+        inboxVisible: inboxVisible
+      };
     });
-    expect(paletteVisible).toBe(true);
+    
+    expect(state.paletteExists).toBe(true);
+    expect(state.bannerHidden).toBe(true);
+    expect(state.inboxVisible).toBe(true);
     
     const screenshotPath = 'docs/screenshots/05-palette.png';
     await page.screenshot({ 
@@ -220,7 +277,6 @@ test.describe('Mail.md Visual Tests', () => {
       fullPage: true 
     });
     
-    // Verify this is different from inbox
     const hash = getFileHash(screenshotPath);
     const inboxHash = screenshotHashes['02-inbox-light'];
     if (inboxHash) {

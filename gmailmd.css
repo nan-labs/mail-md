@@ -89,9 +89,9 @@ html.gmd-on .bkK > .nH.aJl {
   display: none !important;
 }
 
-/* ⚠️ FRAGILE: Promo banners */
+/* Promo banners – use class and generic selector */
+html.gmd-on .banner,
 html.gmd-on .vh {
-  /* Top promo/upsell banners */
   display: none !important;
 }
 
@@ -110,13 +110,23 @@ html.gmd-on [data-gmd="inbox-list"] [role="link"][data-tooltip] {
   display: none !important;
 }
 
-/* Most toolbar icons – keep minimal set */
-html.gmd-on [role="toolbar"] > div > div:not(:first-child):not(:nth-child(2)) {
-  opacity: 0.3;
+/* Minimize toolbar – hide most buttons, show on hover */
+html.gmd-on [role="toolbar"] button {
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
-html.gmd-on [role="toolbar"]:hover > div > div {
+html.gmd-on [role="toolbar"]:hover button {
+  opacity: 0.6;
+}
+
+html.gmd-on [role="toolbar"] button:hover {
   opacity: 1;
+}
+
+/* Toolbar buttons: use same font family */
+html.gmd-on [role="toolbar"] button {
+  font-family: 'iA Writer Duo', 'SF Mono', monospace !important;
 }
 
 /* ============================================================================
@@ -304,35 +314,41 @@ html.gmd-on [data-gmd="compose"] [role="button"][aria-label*="Send"] {
   opacity: 1 !important;
 }
 
-/* Compose header – minimal, quiet close button */
-html.gmd-on [data-gmd="compose"] > div:first-child {
+/* Compose header – minimal, quiet close button at top-right of writing column */
+html.gmd-on [data-gmd="compose"].visible > div:first-child,
+html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child {
   position: absolute !important;
-  top: 1rem !important;
-  right: 1rem !important;
+  top: 2rem !important;
+  right: calc((100vw - 70ch) / 2) !important;
   padding: 0 !important;
   background: transparent !important;
   border: none !important;
   display: flex !important;
   justify-content: flex-end !important;
   width: auto !important;
+  z-index: 10 !important;
 }
 
-html.gmd-on [data-gmd="compose"] > div:first-child button {
+html.gmd-on [data-gmd="compose"].visible > div:first-child button,
+html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child button {
   background: transparent !important;
   border: none !important;
   color: var(--gmd-fg-dim) !important;
-  font-size: 24px !important;
-  padding: 0.5rem !important;
+  font-size: 20px !important;
+  padding: 0.25rem 0.5rem !important;
   cursor: pointer !important;
-  opacity: 0.5 !important;
+  opacity: 0.3 !important;
   transition: opacity 0.2s !important;
+  font-family: 'iA Writer Duo', monospace !important;
 }
 
-html.gmd-on [data-gmd="compose"] > div:first-child button:hover {
-  opacity: 1 !important;
+html.gmd-on [data-gmd="compose"].visible > div:first-child button:hover,
+html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child button:hover {
+  opacity: 0.8 !important;
 }
 
-html.gmd-on [data-gmd="compose"] > div:first-child span:first-child {
+html.gmd-on [data-gmd="compose"].visible > div:first-child span:first-child,
+html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child span:first-child {
   display: none !important;
 }
 

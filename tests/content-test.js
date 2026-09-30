@@ -120,19 +120,24 @@
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        padding-top: 20vh;
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(2px);
+        padding-top: 15vh;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(3px);
       }
 
       .palette {
         width: 600px;
         max-width: 90vw;
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
         overflow: hidden;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: 'iA Writer Duo', 'SF Mono', Monaco, Menlo, Consolas, monospace;
+      }
+
+      [data-gmd-theme="dark"] .palette {
+        background: #1e1e1e;
+        border-color: #404040;
       }
 
       .search-input {
@@ -140,8 +145,15 @@
         padding: 16px 20px;
         border: none;
         border-bottom: 1px solid #e0e0e0;
-        font-size: 16px;
+        font-size: 15px;
         outline: none;
+        font-family: inherit;
+        background: transparent;
+        color: inherit;
+      }
+
+      [data-gmd-theme="dark"] .search-input {
+        border-bottom-color: #404040;
       }
 
       .results {
@@ -150,23 +162,45 @@
       }
 
       .result-item {
-        padding: 12px 20px;
+        padding: 10px 20px;
         cursor: pointer;
-        border-left: 3px solid transparent;
         display: flex;
         align-items: center;
         gap: 12px;
+        background: transparent;
+        transition: background 0.15s;
       }
 
       .result-item:hover,
       .result-item.selected {
         background: #f5f5f5;
-        border-left-color: #1a73e8;
+      }
+
+      [data-gmd-theme="dark"] .result-item:hover,
+      [data-gmd-theme="dark"] .result-item.selected {
+        background: #2d2d2d;
+      }
+
+      .result-item.selected {
+        background: #1a73e8;
+        color: white;
+      }
+
+      [data-gmd-theme="dark"] .result-item.selected {
+        background: #4a9eff;
+        color: #1e1e1e;
       }
 
       .result-icon {
-        font-size: 18px;
-        opacity: 0.6;
+        font-size: 13px;
+        opacity: 0.5;
+        font-family: inherit;
+        font-weight: 500;
+        min-width: 20px;
+      }
+
+      .result-item.selected .result-icon {
+        opacity: 0.8;
       }
 
       .result-label {
@@ -175,9 +209,14 @@
       }
 
       .result-shortcut {
-        font-size: 12px;
-        opacity: 0.5;
-        font-family: monospace;
+        font-size: 11px;
+        opacity: 0.4;
+        font-family: inherit;
+        letter-spacing: 0.05em;
+      }
+
+      .result-item.selected .result-shortcut {
+        opacity: 0.7;
       }
     `;
 
@@ -195,13 +234,13 @@
     const results = shadow.querySelector('.results');
 
     const commands = [
-      { id: 'inbox', label: 'Inbox', icon: '📥', action: () => navigate('#inbox') },
-      { id: 'starred', label: 'Starred', icon: '⭐', action: () => navigate('#starred') },
-      { id: 'sent', label: 'Sent', icon: '📤', action: () => navigate('#sent') },
-      { id: 'drafts', label: 'Drafts', icon: '📝', action: () => navigate('#drafts') },
-      { id: 'compose', label: 'Compose', icon: '✏️', action: () => clickCompose() },
-      { id: 'focus', label: 'Toggle Focus Mode', icon: '🎯', shortcut: '⌘.', action: () => toggleFocusMode() },
-      { id: 'stock', label: 'Toggle Stock Gmail', icon: '🔄', shortcut: '⌘⇧G', action: () => toggleEnabled() },
+      { id: 'inbox', label: 'Inbox', icon: '▣', action: () => navigate('#inbox') },
+      { id: 'starred', label: 'Starred', icon: '★', action: () => navigate('#starred') },
+      { id: 'sent', label: 'Sent', icon: '↗', action: () => navigate('#sent') },
+      { id: 'drafts', label: 'Drafts', icon: '✎', action: () => navigate('#drafts') },
+      { id: 'compose', label: 'Compose', icon: '⊕', action: () => clickCompose() },
+      { id: 'focus', label: 'Toggle Focus Mode', icon: '◉', shortcut: '⌘.', action: () => toggleFocusMode() },
+      { id: 'stock', label: 'Toggle Stock Gmail', icon: '↻', shortcut: '⌘⇧G', action: () => toggleEnabled() },
     ];
 
     let selectedIndex = 0;
