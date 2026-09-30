@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mail.md Options</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Mail.md</h1>
+      <p class="tagline">Markdown-style Gmail</p>
+    </header>
+
+    <section class="settings">
+      <div class="setting">
+        <label class="switch">
+          <input type="checkbox" id="enabled" checked>
+          <span class="slider"></span>
+        </label>
+        <div class="setting-info">
+          <div class="setting-label">Enable Mail.md</div>
+          <div class="setting-hint">Toggle the visual reskin</div>
+        </div>
+      </div>
+
+      <div class="setting">
+        <label class="switch">
+          <input type="checkbox" id="focusByDefault">
+          <span class="slider"></span>
+        </label>
+        <div class="setting-info">
+          <div class="setting-label">Focus by Default</div>
+          <div class="setting-hint">Start in focus mode</div>
+        </div>
+      </div>
+
+      <div class="setting">
+        <div class="setting-info">
+          <div class="setting-label">Theme</div>
+          <div class="setting-hint">Light or dark appearance</div>
+        </div>
+        <select id="theme">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="shortcuts">
+      <h2>Keyboard Shortcuts</h2>
+      <table>
+        <tr>
+          <td><kbd>⌘K</kbd> or <kbd>Ctrl+K</kbd></td>
+          <td>Command Palette</td>
+        </tr>
+        <tr>
+          <td><kbd>⌘.</kbd> or <kbd>Ctrl+.</kbd></td>
+          <td>Toggle Focus Mode</td>
+        </tr>
+        <tr>
+          <td><kbd>⌘⇧G</kbd> or <kbd>Ctrl+Shift+G</kbd></td>
+          <td>Stock Gmail (kill switch)</td>
+        </tr>
+        <tr>
+          <td><kbd>Esc</kbd></td>
+          <td>Exit focus / close palette</td>
+        </tr>
+      </table>
+    </section>
+
+    <footer>
+      <a href="https://github.com/yourusername/mail-md" target="_blank">GitHub</a>
+      <span>·</span>
+      <span class="version">v0.1.0</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

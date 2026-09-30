@@ -1,0 +1,423 @@
+/**
+ * Mail.md – Visual-only Gmail reskin
+ * 
+ * CSS-ONLY changes. Does NOT modify email content or formatting.
+ * Anchored on stable hooks (role, aria-*, contenteditable, data-*).
+ * 
+ * FRAGILE SELECTORS: Isolated in comments marked with "⚠️ FRAGILE"
+ * Update these when Gmail's obfuscated classes change.
+ */
+
+/* ============================================================================
+   FONTS
+   ============================================================================ */
+
+@font-face {
+  font-family: 'iA Writer Duo';
+  src: url('chrome-extension://__MSG_@@extension_id__/fonts/iAWriterDuoS-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'iA Writer Duo';
+  src: url('chrome-extension://__MSG_@@extension_id__/fonts/iAWriterDuoS-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'iA Writer Duo';
+  src: url('chrome-extension://__MSG_@@extension_id__/fonts/iAWriterDuoS-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* ============================================================================
+   BASE STYLES – Only applied when extension is ON
+   ============================================================================ */
+
+html:not(.gmd-on) {
+  /* Stock Gmail: no Mail.md styles applied */
+}
+
+html.gmd-on {
+  /* Extension active */
+}
+
+/* ============================================================================
+   THEME COLORS
+   ============================================================================ */
+
+html[data-gmd-theme="light"] {
+  --gmd-bg: #ffffff;
+  --gmd-fg: #1a1a1a;
+  --gmd-fg-dim: #666666;
+  --gmd-border: #e0e0e0;
+  --gmd-accent: #1a73e8;
+  --gmd-hover: #f5f5f5;
+  --gmd-quote-bg: #fafafa;
+}
+
+html[data-gmd-theme="dark"] {
+  --gmd-bg: #1e1e1e;
+  --gmd-fg: #e0e0e0;
+  --gmd-fg-dim: #888888;
+  --gmd-border: #404040;
+  --gmd-accent: #4a9eff;
+  --gmd-hover: #2d2d2d;
+  --gmd-quote-bg: #252525;
+}
+
+/* ============================================================================
+   HIDE GMAIL CHROME
+   ============================================================================ */
+
+html.gmd-on [role="navigation"] {
+  /* Left sidebar navigation */
+  display: none !important;
+}
+
+html.gmd-on [role="complementary"] {
+  /* Right sidebar (Calendar, Keep, Tasks add-ons) */
+  display: none !important;
+}
+
+/* ⚠️ FRAGILE: Chat/Meet – Gmail uses obfuscated classes */
+html.gmd-on .bkK > .nH.aJl {
+  /* Chat/Meet rail on far right */
+  display: none !important;
+}
+
+/* Promo banners – use class and generic selector */
+html.gmd-on .banner,
+html.gmd-on .vh {
+  display: none !important;
+}
+
+/* Category tabs (Primary, Social, Promotions) */
+html.gmd-on [role="tablist"] {
+  display: none !important;
+}
+
+/* Avatars in inbox list */
+html.gmd-on [data-gmd="inbox-list"] img[role="img"] {
+  display: none !important;
+}
+
+/* Label chips */
+html.gmd-on [data-gmd="inbox-list"] [role="link"][data-tooltip] {
+  display: none !important;
+}
+
+/* Minimize toolbar – hide most buttons, show on hover */
+html.gmd-on [role="toolbar"] button {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+html.gmd-on [role="toolbar"]:hover button {
+  opacity: 0.6;
+}
+
+html.gmd-on [role="toolbar"] button:hover {
+  opacity: 1;
+}
+
+/* Toolbar buttons: use same font family */
+html.gmd-on [role="toolbar"] button {
+  font-family: 'iA Writer Duo', 'SF Mono', monospace !important;
+}
+
+/* ============================================================================
+   LAYOUT – Centered reading column
+   ============================================================================ */
+
+html.gmd-on body {
+  background: var(--gmd-bg) !important;
+  color: var(--gmd-fg) !important;
+  font-family: 'iA Writer Duo', 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace !important;
+  font-size: 17px !important;
+  line-height: 1.6 !important;
+}
+
+html.gmd-on [role="main"] {
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  padding: 2rem !important;
+  background: var(--gmd-bg) !important;
+  color: var(--gmd-fg) !important;
+}
+
+/* Ensure dark theme applies to all containers */
+html.gmd-on .gmail-container,
+html.gmd-on main,
+html.gmd-on #inbox-view,
+html.gmd-on #thread-view {
+  background: var(--gmd-bg) !important;
+  color: var(--gmd-fg) !important;
+}
+
+/* ============================================================================
+   INBOX LIST – Typographic
+   ============================================================================ */
+
+html.gmd-on [data-gmd="inbox-list"] {
+  background: var(--gmd-bg) !important;
+}
+
+html.gmd-on [data-gmd="inbox-list"] [role="row"] {
+  border: none !important;
+  border-bottom: 1px solid var(--gmd-border) !important;
+  padding: 1rem 0 !important;
+  background: transparent !important;
+}
+
+html.gmd-on [data-gmd="inbox-list"] [role="row"]:hover {
+  background: var(--gmd-hover) !important;
+}
+
+/* Hide checkbox except on hover */
+html.gmd-on [data-gmd="inbox-list"] [role="checkbox"] {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+html.gmd-on [data-gmd="inbox-list"] [role="row"]:hover [role="checkbox"] {
+  opacity: 1;
+}
+
+/* Sender · Subject · Date on one line */
+html.gmd-on [data-gmd="inbox-list"] [role="gridcell"] {
+  font-size: 15px !important;
+  color: var(--gmd-fg) !important;
+}
+
+html.gmd-on [data-gmd="inbox-list"] [role="row"][aria-selected="true"] {
+  background: var(--gmd-hover) !important;
+  border-left: 3px solid var(--gmd-accent) !important;
+}
+
+/* ============================================================================
+   READING VIEW – Centered, typographic
+   ============================================================================ */
+
+html.gmd-on [role="main"] [role="listitem"] {
+  max-width: 70ch !important;
+  margin: 0 auto !important;
+  padding: 2rem 0 !important;
+}
+
+/* Email body typography */
+html.gmd-on [role="listitem"] [role="article"] {
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  color: var(--gmd-fg) !important;
+  background: transparent !important;
+  padding: 1rem 0 !important;
+  border-left: 2px solid var(--gmd-border) !important;
+  padding-left: 1.5rem !important;
+  margin: 1.5rem 0 !important;
+}
+
+/* Quoted text (replies) – dimmed */
+html.gmd-on [role="listitem"] blockquote,
+html.gmd-on [role="listitem"] .gmail_quote {
+  color: var(--gmd-fg-dim) !important;
+  border-left: 3px solid var(--gmd-border) !important;
+  padding-left: 1rem !important;
+  margin: 1rem 0 !important;
+  background: transparent !important;
+  padding: 0.5rem 1rem !important;
+  opacity: 0.7 !important;
+}
+
+/* Links */
+html.gmd-on a {
+  color: var(--gmd-accent) !important;
+  text-decoration: none !important;
+}
+
+html.gmd-on a:hover {
+  text-decoration: underline !important;
+}
+
+/* ============================================================================
+   COMPOSE – Full-screen writing room
+   ============================================================================ */
+
+/* Only apply full-screen compose when dialog is visible/active */
+html.gmd-on [data-gmd="compose"].visible,
+html.gmd-on [data-gmd="compose"][style*="display: block"],
+html.gmd-on [data-gmd="compose"]:not([style*="display: none"]):not([hidden]) {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  background: var(--gmd-bg) !important;
+  color: var(--gmd-fg) !important;
+  z-index: 9999 !important;
+  padding: 4rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+/* Compose inner container */
+html.gmd-on [data-gmd="compose"] > div {
+  width: 100% !important;
+  max-width: 70ch !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Recipients line – quiet, minimal, same font family */
+html.gmd-on [data-gmd="compose"] [role="combobox"],
+html.gmd-on [data-gmd="compose"] input[type="text"] {
+  font-family: 'iA Writer Duo', 'SF Mono', 'Monaco', monospace !important;
+  font-size: 14px !important;
+  color: var(--gmd-fg-dim) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--gmd-border) !important;
+  background: transparent !important;
+  padding: 0.5rem 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Subject line */
+html.gmd-on [data-gmd="compose"] input[name="subjectbox"] {
+  font-family: 'iA Writer Duo', 'SF Mono', 'Monaco', monospace !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  color: var(--gmd-fg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--gmd-border) !important;
+  background: transparent !important;
+  padding: 1rem 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Compose editor – full-height, centered typography */
+html.gmd-on [data-gmd="compose"] [contenteditable="true"] {
+  flex: 1 !important;
+  font-family: 'iA Writer Duo', 'SF Mono', 'Monaco', monospace !important;
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  color: var(--gmd-fg) !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 1rem 0 !important;
+  outline: none !important;
+  resize: none !important;
+}
+
+/* Hide formatting toolbar by default, show on hover */
+html.gmd-on [data-gmd="compose"] [role="toolbar"] {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+html.gmd-on [data-gmd="compose"]:hover [role="toolbar"] {
+  opacity: 1;
+}
+
+/* Send button – keep visible */
+html.gmd-on [data-gmd="compose"] [role="button"][aria-label*="Send"] {
+  opacity: 1 !important;
+}
+
+/* Compose header – minimal, quiet close button at top-right of writing column */
+html.gmd-on [data-gmd="compose"].visible > div:first-child,
+html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child {
+  position: absolute !important;
+  top: 3rem !important;
+  right: calc((100vw - 70ch) / 2 - 2rem) !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  display: block !important;
+  width: auto !important;
+  z-index: 10 !important;
+}
+
+html.gmd-on [data-gmd="compose"].visible > div:first-child button,
+html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child button {
+  background: transparent !important;
+  border: none !important;
+  color: var(--gmd-fg-dim) !important;
+  font-size: 18px !important;
+  padding: 0.25rem 0.5rem !important;
+  cursor: pointer !important;
+  opacity: 0.25 !important;
+  transition: opacity 0.2s !important;
+  font-family: 'iA Writer Duo', monospace !important;
+  line-height: 1 !important;
+}
+
+html.gmd-on [data-gmd="compose"].visible:hover > div:first-child button,
+html.gmd-on [data-gmd="compose"][style*="display: block"]:hover > div:first-child button {
+  opacity: 0.4 !important;
+}
+
+html.gmd-on [data-gmd="compose"].visible > div:first-child button:hover,
+html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child button:hover {
+  opacity: 1 !important;
+}
+
+html.gmd-on [data-gmd="compose"].visible > div:first-child span:first-child,
+html.gmd-on [data-gmd="compose"][style*="display: block"] > div:first-child span:first-child {
+  display: none !important;
+}
+
+/* ============================================================================
+   FOCUS MODE – Hide everything except content
+   ============================================================================ */
+
+html.gmd-on.gmd-focus [role="banner"],
+html.gmd-on.gmd-focus [role="search"],
+html.gmd-on.gmd-focus [data-gmd="inbox-list"] > :first-child {
+  /* Hide header, search, inbox list header in focus mode */
+  display: none !important;
+}
+
+html.gmd-on.gmd-focus [role="toolbar"] {
+  opacity: 0 !important;
+}
+
+html.gmd-on.gmd-focus [role="toolbar"]:hover {
+  opacity: 0.5 !important;
+}
+
+/* ============================================================================
+   OPTIONAL: Plain reading mode (flatten newsletter HTML)
+   Not implemented in v0 – requires toggle in popup
+   ============================================================================ */
+
+html.gmd-on.gmd-plain [role="article"] * {
+  /* Future: visually flatten rich HTML emails */
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+}
+
+/* ============================================================================
+   UTILITY: Ensure content remains functional
+   ============================================================================ */
+
+html.gmd-on *:focus-visible {
+  outline: 2px solid var(--gmd-accent) !important;
+  outline-offset: 2px !important;
+}
+
+/* Preserve Gmail's own keyboard navigation */
+html.gmd-on [role="row"][tabindex="0"],
+html.gmd-on [role="button"][tabindex="0"] {
+  /* Keep focusable */
+}
