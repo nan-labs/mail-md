@@ -112,7 +112,7 @@
     style.textContent = `
       :host {
         position: fixed;
-        top: 15vh;
+        top: 0;
         left: 0;
         right: 0;
         bottom: 0;
@@ -120,7 +120,7 @@
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        padding-top: 0;
+        padding-top: 15vh;
         background: rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(3px);
       }

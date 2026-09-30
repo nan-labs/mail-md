@@ -213,6 +213,11 @@ html.gmd-on [role="listitem"] [role="article"] {
   font-size: 18px !important;
   line-height: 1.6 !important;
   color: var(--gmd-fg) !important;
+  background: transparent !important;
+  padding: 1rem 0 !important;
+  border-left: 2px solid var(--gmd-border) !important;
+  padding-left: 1.5rem !important;
+  margin: 1.5rem 0 !important;
 }
 
 /* Quoted text (replies) – dimmed */
@@ -222,8 +227,9 @@ html.gmd-on [role="listitem"] .gmail_quote {
   border-left: 3px solid var(--gmd-border) !important;
   padding-left: 1rem !important;
   margin: 1rem 0 !important;
-  background: var(--gmd-quote-bg) !important;
+  background: transparent !important;
   padding: 0.5rem 1rem !important;
+  opacity: 0.7 !important;
 }
 
 /* Links */
